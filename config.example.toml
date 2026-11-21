@@ -1,0 +1,39 @@
+# AprsMonitor configuration. Copy to config.toml and edit.
+# Check it with:   aprsmonitor -check-config
+# Test delivery:   aprsmonitor -test-alert
+
+# The iGate to watch, exactly as it appears on aprs.fi (callsign plus SSID).
+callsign = "N0CALL-10"
+
+# Alert when no packet gated by the iGate has been seen for this long.
+# Go duration syntax: "45m", "2h". Minimum 1m. Default 1h.
+# A busy iGate can use 15m-30m; a quiet rural one may need several hours.
+# silence_threshold = "1h"
+
+# Also count packets whose source is the iGate itself (its own beacons).
+# Off by default: a beacon sent over the internet proves the iGate has a
+# network link, but not that its radio receiver works.
+# count_own_packets = false
+
+# Send a message when the iGate comes back. Default true.
+# notify_recovery = true
+
+[aprsis]
+# server = "rotate.aprs2.net:14580"   # must be a port that accepts filters
+# login_callsign = ""                 # defaults to callsign
+# passcode = "-1"                     # read-only login, no passcode needed
+
+# Configure at least one of [email] and [webhook].
+
+# [email]
+# host = "smtp.example.org"
+# port = 587
+# security = "starttls"               # starttls | tls | none
+# username = "alerts@example.org"
+# password = "env:APRSMON_SMTP_PASSWORD"   # read from the environment
+# from = "aprsmonitor@example.org"
+# to = ["you@example.org"]
+
+# [webhook]
+# Discord, Slack, Mattermost, or any endpoint accepting JSON POSTs.
+# url = "env:APRSMON_WEBHOOK_URL"

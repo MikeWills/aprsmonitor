@@ -62,3 +62,21 @@ backoff (5 s doubling to 5 min; reset after any successful login).
   every server.
 - **Tests** run against an in-process fake APRS-IS server (login line,
   filter, packets, drop and reconnect, cancel), so no network is needed.
+
+## Notifications (`internal/notify`)
+
+Two channels in v1, both behind one `Notifier` interface so more can be added
+without touching the monitor loop.
+
+- **Email**: SMTP with `starttls` (default, requires the server to offer it,
+  never silently downgrades), implicit `tls`, or `none` for a trusted local
+  relay. Subject lines have CR/LF stripped so event text can never inject
+  headers; addresses are parsed, not concatenated.
+- **Webhook**: JSON POST. The text is sent as both `content` (Discord) and
+  `text` (Slack, Mattermost, Rocket.Chat), plus `event`, `callsign`,
+  `subject`, `body` for generic receivers. Webhook URLs are secrets (the token
+  is in the path), so they are stripped from error messages and logs.
+- **Delivery**: `Dispatch` tries every notifier independently, retrying each
+  up to 3 times with doubling delay. One broken channel never blocks another,
+  and the error names every channel that gave up. A `Down` alert is sent once
+  per outage, so retry matters: a lost alert is not re-sent.

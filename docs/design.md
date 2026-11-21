@@ -44,3 +44,21 @@ cannot decode is still valid proof of life. On a parse error the matcher
 splits the header by hand. This avoids a false "iGate down" alert caused by an
 unusual packet type. The library's README warns it is new and lightly tested;
 this fallback also limits our exposure to its bugs.
+
+## APRS-IS connection (`internal/aprsis`)
+
+`aprsis.Run` holds one read-only connection and reconnects with exponential
+backoff (5 s doubling to 5 min; reset after any successful login).
+
+- **Server-side filter.** The login sends `filter e/<CALL>`. The APRS-IS
+  *entry station* filter passes exactly the packets whose q construct is
+  followed by that callsign (checked against the APRS-IS filter docs), so the
+  monitor receives only the iGate's own traffic, a trickle rather than the
+  firehose. When `count_own_packets` is on, `b/<CALL>` is added.
+- **Dead links.** Servers send a `#` keepalive about every 20 s. A read that
+  returns nothing for `ReadTimeout` (90 s) is treated as a dead link and the
+  client reconnects.
+- **Plain text only.** IS2 upgrade is disabled so behaviour is identical on
+  every server.
+- **Tests** run against an in-process fake APRS-IS server (login line,
+  filter, packets, drop and reconnect, cancel), so no network is needed.

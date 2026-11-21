@@ -1,3 +1,5 @@
+github.com/BurntSushi/toml v1.6.0 h1:dRaEfpa2VI55EwlIW72hMRHdWouJeRF7TPYhI+AUQjk=
+github.com/BurntSushi/toml v1.6.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/hessu/go-aprs-fap v1.0.2 h1:1MiyHrH/FtEhBKW46B8nE56bmwZ88pc8fsuUSMrAoHw=
 github.com/hessu/go-aprs-fap v1.0.2/go.mod h1:kBSTq7YIPMmPU2BnJlcAewZrmYLzEJHmBm7gcXItglI=
 google.golang.org/protobuf v1.36.10 h1:AYd7cD/uASjIL6Q9LiTjz8JLcrh/88q5UObnmY3aOOE=

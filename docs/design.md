@@ -80,3 +80,26 @@ without touching the monitor loop.
   up to 3 times with doubling delay. One broken channel never blocks another,
   and the error names every channel that gave up. A `Down` alert is sent once
   per outage, so retry matters: a lost alert is not re-sent.
+
+## Monitor loop (`internal/monitor`)
+
+Glue between the pieces. Packets arrive on the APRS-IS goroutine; a 30 s
+ticker evaluates the tracker.
+
+- **Blind is not down.** While the monitor itself is disconnected from
+  APRS-IS it raises no alert, and on reconnect the silence clock restarts.
+  Otherwise a network blip on the monitor's host would report a healthy iGate
+  as dead.
+- **Lock discipline.** State is guarded by a mutex, but notifications are sent
+  after the lock is released, so slow SMTP never stalls packet intake.
+- Alert text names the station, the threshold, when it was last heard, and
+  what to check. `-test-alert` sends a test through every channel.
+
+## Configuration (`internal/config`)
+
+TOML, strict: unknown keys are errors (a typo like `silence_treshold` must not
+silently fall back to the default). Secrets can be written as `env:NAME`
+to read them from the environment instead of the file; an explicit prefix is
+used instead of `$VAR` expansion so passwords containing `$` stay intact. An
+unset variable is a startup error, not an empty password. See
+[configuration.md](configuration.md).

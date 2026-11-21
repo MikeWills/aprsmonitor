@@ -1,0 +1,35 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Format
+        run: test -z "$(gofmt -l .)"
+      - run: go vet ./...
+      - run: go test ./...
+
+  cross-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [linux/amd64, linux/arm64, linux/arm, windows/amd64, darwin/arm64, darwin/amd64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Build ${{ matrix.target }}
+        run: |
+          GOOS=${{ matrix.target }} ; GOOS=${GOOS%/*}
+          GOARCH=${{ matrix.target }} ; GOARCH=${GOARCH#*/}
+          GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -o /dev/null ./cmd/aprsmonitor

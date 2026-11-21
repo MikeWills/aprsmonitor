@@ -19,28 +19,52 @@ func (e Event) String() string {
 // Tracker is not safe for concurrent use; guard it with a mutex if shared.
 type Tracker struct {
 	threshold time.Duration
-	lastHeard time.Time
-	down      bool
+	// clock is the start of the current silence measurement: the later of the
+	// last heard packet, the last (re)connect, and the tracker's creation.
+	clock time.Time
+	down  bool
+	// heardSinceDown is set by Heard and is the only thing that ends Down.
+	heardSinceDown bool
 }
 
-// New returns a Tracker that reports Down after threshold of silence.
-func New(threshold time.Duration) *Tracker {
-	return &Tracker{threshold: threshold}
+// New returns a Tracker that reports Down after threshold of silence. The
+// silence clock starts at start, so a fresh monitor gets a full threshold of
+// grace before it can alert.
+func New(threshold time.Duration, start time.Time) *Tracker {
+	return &Tracker{threshold: threshold, clock: start}
 }
 
-// Heard records a packet gated by the watched station at time t.
-func (t *Tracker) Heard(at time.Time) { t.lastHeard = at }
+// Heard records a packet gated by the watched station at time at.
+func (t *Tracker) Heard(at time.Time) {
+	if at.After(t.clock) {
+		t.clock = at
+	}
+	t.heardSinceDown = true
+}
+
+// Resume must be called when the monitor (re)connects to APRS-IS. Time spent
+// disconnected is not evidence about the iGate, so the silence clock restarts
+// at now. It never changes the Down state; only Heard can recover.
+func (t *Tracker) Resume(now time.Time) {
+	if now.After(t.clock) {
+		t.clock = now
+	}
+}
 
 // Check returns the state change, if any, as of now.
 func (t *Tracker) Check(now time.Time) Event {
-	silent := now.Sub(t.lastHeard) > t.threshold
-	switch {
-	case silent && !t.down:
+	if t.down {
+		if t.heardSinceDown {
+			t.down = false
+			return Recovered
+		}
+		return None
+	}
+	t.heardSinceDown = false
+	if now.Sub(t.clock) > t.threshold {
 		t.down = true
+		t.heardSinceDown = false
 		return Down
-	case !silent && t.down:
-		t.down = false
-		return Recovered
 	}
 	return None
 }

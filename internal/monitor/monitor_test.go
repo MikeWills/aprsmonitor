@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"aprsmonitor/internal/notify"
+	"github.com/MikeWills/aprsmonitor/internal/notify"
 )
 
 type capture struct {

@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"aprsmonitor/internal/gate"
-	"aprsmonitor/internal/notify"
-	"aprsmonitor/internal/watch"
+	"github.com/MikeWills/aprsmonitor/internal/gate"
+	"github.com/MikeWills/aprsmonitor/internal/notify"
+	"github.com/MikeWills/aprsmonitor/internal/watch"
 )
 
 // Config for a Monitor.

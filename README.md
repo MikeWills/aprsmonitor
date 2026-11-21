@@ -20,6 +20,8 @@ When the iGate is heard again it tells you that too.
    go build -o aprsmonitor ./cmd/aprsmonitor
    ```
 
+   or `go install github.com/MikeWills/aprsmonitor/cmd/aprsmonitor@latest`.
+
 2. Copy `config.example.toml` to `config.toml`, set your iGate callsign
    (with SSID) and add an `[email]` or `[webhook]` section.
 3. Check it and send yourself a test alert:

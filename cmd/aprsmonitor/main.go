@@ -11,10 +11,10 @@ import (
 	"syscall"
 	"time"
 
-	"aprsmonitor/internal/aprsis"
-	"aprsmonitor/internal/config"
-	"aprsmonitor/internal/monitor"
-	"aprsmonitor/internal/notify"
+	"github.com/MikeWills/aprsmonitor/internal/aprsis"
+	"github.com/MikeWills/aprsmonitor/internal/config"
+	"github.com/MikeWills/aprsmonitor/internal/monitor"
+	"github.com/MikeWills/aprsmonitor/internal/notify"
 )
 
 // version is set at build time with -ldflags "-X main.version=...".

@@ -1,0 +1,4 @@
+github.com/hessu/go-aprs-fap v1.0.2 h1:1MiyHrH/FtEhBKW46B8nE56bmwZ88pc8fsuUSMrAoHw=
+github.com/hessu/go-aprs-fap v1.0.2/go.mod h1:kBSTq7YIPMmPU2BnJlcAewZrmYLzEJHmBm7gcXItglI=
+google.golang.org/protobuf v1.36.10 h1:AYd7cD/uASjIL6Q9LiTjz8JLcrh/88q5UObnmY3aOOE=
+google.golang.org/protobuf v1.36.10/go.mod h1:HTf+CrKn2C3g5S8VImy6tdcUvCska2kB7j23XfzDpco=
